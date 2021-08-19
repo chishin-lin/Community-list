@@ -41,14 +41,15 @@
       </div>
     </nav>
     <!--Users list-->
-    <div class="usersListContain">
-      <!--one User-->
+    <div class="container-fluid mt-4">
+      <div class="row userListContain" id="data-panel"></div>
     </div>
+    <!--one User-->
 
     <!-- Modal -->
     <div
       class="modal fade"
-      id="exampleModal"
+      id="userModal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -64,8 +65,31 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">...</div>
+          <div class="modal-body">
+            <div class="row g-0">
+              <div class="col-md-5 ">
+                <img id="Img " src="https://randomuser.me/api/portraits/men/88.jpg" class="img-fluid rounded-start" alt="..." />
+              </div>
+              <div class="col-md-7">
+                <div class="card-body">
+                  <h5 class="card-title modal-name">name</h5>
+                  <p class="card-text">
+                    <ul>
+                      <li class="email">email:</li>
+                      <li class="gender">gender:</li>
+                      <li class="age">age:</li>
+                      <li class="birthDay">birthday:</li>
+                    </ul>
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted updated">updated_at:</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="modal-footer">
+            <small class="text-muted created">created_at:</small>
             <button
               type="button"
               class="btn btn-secondary"
@@ -73,7 +97,7 @@
             >
               Close
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary">+</button>
           </div>
         </div>
       </div>
