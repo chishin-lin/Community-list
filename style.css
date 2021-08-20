@@ -16,3 +16,11 @@ div.card:hover {
 .card-btn {
   text-align: center;
 }
+
+.card-title {
+  margin: 10px;
+}
+
+.card-btn {
+  margin-left: 10px;
+}

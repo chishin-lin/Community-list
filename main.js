@@ -5,7 +5,9 @@ const userListContainer = document.querySelector(".user-list-container");
 const users = [];
 
 function showUserModal(id) {
-  const name = document.querySelector(".modal-name");
+  const modalName = document.querySelector(".card-name");
+  const modalTitle = document.querySelector(".modal-title");
+
   const email = document.querySelector(".email");
   const gender = document.querySelector(".gender");
   const age = document.querySelector(".age");
@@ -17,7 +19,8 @@ function showUserModal(id) {
   axios.get(`${URL}${id}`).then((response) => {
     const item = response.data;
 
-    name.innerText = `${item.name} ${item.surname}`;
+    modalName.innerText = `${item.name} ${item.surname}`;
+    modalTitle.innerText = `${item.name} ${item.surname}`;
     email.innerText = `Email: ${item.email}`;
     gender.innerText = `Gender: ${item.gender}  `;
     age.innerText = `Age: ${item.age}  `;
@@ -31,18 +34,40 @@ function showUserModal(id) {
 function renderUserList(data) {
   let rawHTML = "";
   data.forEach((item) => {
-    rawHTML += `<div class="card" style="width: 12rem" data-id="${item.id}">
-        <img src="${item.avatar}" class="cardimg " alt="..."  data-bs-toggle="modal"
-        data-bs-target="#userModal"/>
-        <div class="card-body card-btn" data-id="${item.id}">
-          <button
+    rawHTML +=
+      // <div class="card" style="width: 12rem" data-id="${item.id}">
+      //     <img src="${item.avatar}" class="cardimg " alt="..."  data-bs-toggle="modal"
+      //     data-bs-target="#userModal"/>
+      //     <div class="card-body card-btn" data-id="${item.id}">
+      //       <button
+      //         type="button"
+      //         class="btn btn-primary btn-center"
+      //         data-bs-toggle="modal"
+      //         data-bs-target="#userModal"
+      //       >${item.name} ${item.surname}</button>
+      //     </div>
+      //   </div>
+
+      `<div class="card mb-3" style="max-width: 450px;">
+  <div class="row g-0" data-id="${item.id}">
+    <div class="col-md-4">
+      <img src="${item.avatar}" class="img-fluid rounded-start" alt="..." data-bs-toggle="modal"
+      data-bs-target="#userModal">
+    </div>
+    <div class="col-md-8" data-id="${item.id}>
+      <div class="card-body">
+        <h5 class="card-title">${item.name} ${item.surname}</h5>
+        <button
             type="button"
-            class="btn btn-primary btn-center"
+            class="btn btn-primary card-btn"
             data-bs-toggle="modal"
             data-bs-target="#userModal"
-          >${item.name} ${item.surname}</button>
-        </div>
+          >More</button>
       </div>
+    </div>
+  </div>
+</div>
+
 `;
   });
 
@@ -50,8 +75,7 @@ function renderUserList(data) {
 }
 
 userListContainer.addEventListener("click", function showModal(event) {
-  console.log(event.target.parentElement);
-  showUserModal(event.target.parentElement.dataset.id);
+  showUserModal(event.target.parentElement.parentElement.dataset.id);
 });
 
 axios.get(URL).then((response) => {
