@@ -11,10 +11,11 @@
       integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <!--Nav-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Fake User List</a>
         <button
@@ -41,10 +42,11 @@
       </div>
     </nav>
     <!--Users list-->
-    <div class="container-fluid mt-4">
-      <div class="row userListContain" id="data-panel"></div>
+    <div class="container mt-5">
+      <div class="row  justify-content-evenly user-list-container" id="data-panel"></div>
     </div>
-    <!--one User-->
+    
+    
 
     <!-- Modal -->
     <div
@@ -54,8 +56,8 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
-        <div class="modal-content">
+      <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content ">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
             <button
@@ -67,8 +69,8 @@
           </div>
           <div class="modal-body">
             <div class="row g-0">
-              <div class="col-md-5 ">
-                <img id="Img " src="https://randomuser.me/api/portraits/men/88.jpg" class="img-fluid rounded-start" alt="..." />
+              <div class="col-md-5 modal-img">
+                <img id="modal-img" src="https://randomuser.me/api/portraits/men/88.jpg" class="img-fluid rounded" alt="..." width="200px"/>
               </div>
               <div class="col-md-7">
                 <div class="card-body">
@@ -82,14 +84,15 @@
                     </ul>
                   </p>
                   <p class="card-text">
-                    <small class="text-muted updated">updated_at:</small>
+                    <small class="text-muted">created_at:</small><br>
+                    <small class="text-muted created">created_at:</small>
                   </p>
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <small class="text-muted created">created_at:</small>
+            <small class="text-muted updated">updated_at:</small>
             <button
               type="button"
               class="btn btn-secondary"

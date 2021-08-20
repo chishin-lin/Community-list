@@ -1,0 +1,18 @@
+div.card {
+  box-shadow: 5px 5px 10px rgb(148, 148, 148);
+  transition: all 0.4s ease;
+  margin: 10px;
+  padding: 0;
+}
+div.card:hover {
+  transform: scale(1.1);
+}
+
+.cardimg {
+  margin: 10px 10px 0;
+  border-radius: 5px;
+}
+
+.card-btn {
+  text-align: center;
+}

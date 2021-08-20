@@ -1,6 +1,6 @@
-const apiData = "https://lighthouse-user-api.herokuapp.com/api/v1/users/";
+const URL = "https://lighthouse-user-api.herokuapp.com/api/v1/users/";
 
-const userListContain = document.querySelector(".userListContain");
+const userListContainer = document.querySelector(".user-list-container");
 
 const users = [];
 
@@ -10,48 +10,51 @@ function showUserModal(id) {
   const gender = document.querySelector(".gender");
   const age = document.querySelector(".age");
   const birthDay = document.querySelector(".birthDay");
-  const modalImg = document.querySelector("#Img");
+  const modalImg = document.getElementById("modal-img");
   const updated = document.querySelector(".updated");
   const created = document.querySelector(".created");
-  axios.get(apiData + id).then((response) => {
+
+  axios.get(`${URL}${id}`).then((response) => {
     const item = response.data;
+
     name.innerText = `${item.name} ${item.surname}`;
     email.innerText = `Email: ${item.email}`;
     gender.innerText = `Gender: ${item.gender}  `;
     age.innerText = `Age: ${item.age}  `;
     birthDay.innerText = `Birthday${item.birthday}`;
-    updated.innerText = `updated_at: ${item.updated_at}`;
-    created.innerText = `created_at: ${item.created_at}`;
-    modalImg.innerHTML = `<img id="modalImg " src="${item.avatar}" class="img-fluid rounded-start" alt="..." />`;
+    updated.innerText = `updated_at:${item.updated_at}`;
+    created.innerText = `${item.created_at}`;
+    modalImg.src = item.avatar;
   });
 }
+
 function renderUserList(data) {
   let rawHTML = "";
   data.forEach((item) => {
-    rawHTML += `<div class="card" style="width: 18rem" data-id="${item.id}">
-    <img src="${item.avatar}" class="card-img-top modalImg" alt="..."  data-bs-toggle="modal"
-    data-bs-target="#userModal"/>
-    <div class="card-body" data-id="${item.id}">
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#userModal"
-      >
-      ${item.name} ${item.surname}
-      </button>
-    </div>
-  </div>`;
+    rawHTML += `<div class="card" style="width: 12rem" data-id="${item.id}">
+        <img src="${item.avatar}" class="cardimg " alt="..."  data-bs-toggle="modal"
+        data-bs-target="#userModal"/>
+        <div class="card-body card-btn" data-id="${item.id}">
+          <button
+            type="button"
+            class="btn btn-primary btn-center"
+            data-bs-toggle="modal"
+            data-bs-target="#userModal"
+          >${item.name} ${item.surname}</button>
+        </div>
+      </div>
+`;
   });
 
-  userListContain.innerHTML = rawHTML;
+  userListContainer.innerHTML = rawHTML;
 }
 
-userListContain.addEventListener("click", (event) => {
+userListContainer.addEventListener("click", function showModal(event) {
+  console.log(event.target.parentElement);
   showUserModal(event.target.parentElement.dataset.id);
 });
 
-axios.get(apiData).then((response) => {
+axios.get(URL).then((response) => {
   users.push(...response.data.results);
   renderUserList(users);
 });
