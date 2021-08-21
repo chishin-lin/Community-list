@@ -4,10 +4,9 @@ const userListContainer = document.querySelector(".user-list-container");
 const serchForm = document.querySelector("#search-form");
 const searchInput = document.querySelector("#search-input");
 const paginator = document.querySelector("#paginator");
-const dataPanel = document.querySelector("#data-panel");
-const USER_PER_PAGE = 8;
+const USER_PER_PAGE = 10;
 
-const users = [];
+const users = JSON.parse(localStorage.getItem("Favorite"));
 let filterUsers = [];
 
 function showUserModal(id) {
@@ -51,12 +50,11 @@ function renderUserList(data) {
         <h5 class="card-title">${item.name} </h5>
         <button
             type="button"
-            class="btn btn-primary card-btn btn-show-user"
+            class="btn btn-primary card-btn"
             data-bs-toggle="modal"
             data-bs-target="#userModal"
-            data-id="${item.id}"
           >More</button>
-          <button type="button" class="btn btn-danger btn-add-user" data-id="${item.id}">+</button>
+          <button type="button" class="btn btn-danger">+</button>
       </div>
     </div>
   </div>
@@ -69,9 +67,9 @@ function renderUserList(data) {
 
 function addToFavorite(id) {
   const favoriteList = JSON.parse(localStorage.getItem("Favorite")) || [];
-  const user = users.find((user) => user.id === id);
+  const user = users.filter((user) => user.id === id);
   if (favoriteList.some((user) => user.id === id)) {
-    return alert(`${user.name}已在好友清單中囉！`);
+    return alert(`${user}已在好友清單中囉！`);
   }
   favoriteList.push(user);
   localStorage.setItem("Favorite", JSON.stringify(favoriteList));
@@ -92,15 +90,6 @@ function renderPaginator(amount) {
   }
   paginator.innerHTML = rawHTML;
 }
-
-dataPanel.addEventListener("click", function onPanelClick(event) {
-  event.preventDefault();
-  if (event.target.matches(".btn-show-user")) {
-    showUserModal(event.target.dataset.id);
-  } else if (event.target.matches(".btn-add-user")) {
-    addToFavorite(Number(event.target.dataset.id));
-  }
-});
 
 serchForm.addEventListener("submit", function onSearchPeople(event) {
   event.preventDefault();
@@ -127,8 +116,4 @@ paginator.addEventListener("click", function onPaginatorClick(event) {
   renderUserList(getUserByPage(page));
 });
 
-axios.get(URL).then((response) => {
-  users.push(...response.data.results);
-  renderUserList(getUserByPage(1));
-  renderPaginator(users.length);
-});
+renderUserList(users);
