@@ -15,7 +15,9 @@ let filterUsers = [];
 let filterGenders = [];
 let page = 1;
 let cardModel = true;
+let genderAll = "all";
 
+//Modal
 function showUserModal(id) {
   const modalName = document.querySelector(".card-name");
   const modalTitle = document.querySelector(".modal-title");
@@ -45,6 +47,7 @@ function showUserModal(id) {
 
 function renderUserList(data) {
   let rawHTML = "";
+
   data.forEach((item) => {
     if (cardModel) {
       rawHTML += `<div class="grid col-sm-3">
@@ -87,14 +90,14 @@ function renderUserList(data) {
 </div>
 `;
     }
+    console.log(data);
   });
-
   userListContainer.innerHTML = rawHTML;
 }
 
 function filterGender(users, condition) {
   filterGenders = users.filter((user) => user.gender === condition);
-  renderUserList(filterGenders);
+  renderUserList(getUserByPage(1, filterGenders));
   renderPaginator(filterGenders.length);
 }
 
@@ -108,10 +111,10 @@ function addToFavorite(id) {
   localStorage.setItem("Favorite", JSON.stringify(favoriteList));
 }
 
-function getUserByPage(page) {
+function getUserByPage(page, data) {
   const startIndex = (page - 1) * USER_PER_PAGE;
   // const data = filterMovies.length ? filterMovies : movies;
-  return users.slice(startIndex, startIndex + USER_PER_PAGE);
+  return data.slice(startIndex, startIndex + USER_PER_PAGE);
 }
 
 function renderPaginator(amount) {
@@ -149,7 +152,8 @@ serchForm.addEventListener("submit", function onSearchPeople(event) {
   if (filterUsers.length === 0) {
     return alert(`您輸入的關鍵字：${keyword} 沒有符合條件的人`);
   }
-  renderUserList(filterUsers);
+  renderUserList(getUserByPage(page, filterUsers));
+  renderPaginator(filterUsers.length);
 });
 
 userListContainer.addEventListener("click", function onShowModal(event) {
@@ -159,28 +163,43 @@ userListContainer.addEventListener("click", function onShowModal(event) {
 paginator.addEventListener("click", function onPaginatorClick(event) {
   event.preventDefault();
   if (event.target.tagName !== "A") return;
-
   page = Number(event.target.dataset.page);
-  renderUserList(getUserByPage(page));
+  if (genderAll === "male") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else if (genderAll === "female") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else {
+    renderUserList(getUserByPage(page, users));
+  }
 });
 
 icon.addEventListener("click", function onIconClick(event) {
   cardModel = event.target.matches(".card-view");
-  renderUserList(getUserByPage(page));
+  if (genderAll === "male") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else if (genderAll === "female") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else {
+    renderUserList(getUserByPage(page, users));
+  }
 });
 
 genderBtn.addEventListener("click", function onGenderClick(event) {
   if (event.target.dataset.gender === "male") {
     filterGender(users, "male");
+    genderAll = "male";
   } else if (event.target.dataset.gender === "female") {
+    genderAll = "female";
     filterGender(users, "female");
   } else {
-    renderUserList(getUserByPage(page));
+    genderAll = "all";
+    renderUserList(getUserByPage(page, users));
+    renderPaginator(users.length);
   }
 });
 
 axios.get(URL).then((response) => {
   users.push(...response.data.results);
-  renderUserList(getUserByPage(1));
+  renderUserList(getUserByPage(1, users));
   renderPaginator(users.length);
 });
