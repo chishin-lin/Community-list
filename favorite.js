@@ -3,16 +3,19 @@ const URL = "https://lighthouse-user-api.herokuapp.com/api/v1/users/";
 const userListContainer = document.querySelector(".user-list-container");
 const serchForm = document.querySelector("#search-form");
 const searchInput = document.querySelector("#search-input");
+const dataPanel = document.querySelector("#data-panel");
 const paginator = document.querySelector("#paginator");
-const USER_PER_PAGE = 10;
+const icon = document.querySelector("#view-selector");
+const USER_PER_PAGE = 16;
 
 const users = JSON.parse(localStorage.getItem("Favorite"));
 let filterUsers = [];
+let page = 1;
+let cardModel = true;
 
 function showUserModal(id) {
   const modalName = document.querySelector(".card-name");
   const modalTitle = document.querySelector(".modal-title");
-
   const email = document.querySelector(".email");
   const gender = document.querySelector(".gender");
   const age = document.querySelector(".age");
@@ -23,7 +26,6 @@ function showUserModal(id) {
 
   axios.get(`${URL}${id}`).then((response) => {
     const item = response.data;
-
     modalName.innerText = `${item.name} ${item.surname}`;
     modalTitle.innerText = `${item.name} ${item.surname}`;
     email.innerText = `Email: ${item.email}`;
@@ -39,7 +41,25 @@ function showUserModal(id) {
 function renderUserList(data) {
   let rawHTML = "";
   data.forEach((item) => {
-    rawHTML += `<div class="card mb-3" style="max-width: 450px;">
+    if (cardModel) {
+      rawHTML += `<div class="grid col-sm-3">
+    <div class="card mb-4">
+        <img src="${item.avatar}" class="card-img-top" alt="..." />
+          <div class="card-body">
+          <h5 class="card-title">${item.name}</h5>
+          <button
+          type="button"
+          class="btn btn-primary card-btn btn-show-user"
+          data-bs-toggle="modal"
+          data-bs-target="#userModal"
+          data-id="${item.id}"
+        >More</button>
+        <button type="button" class="btn btn-danger btn-add-user" data-id="${item.id}">+</button>
+        </div>
+      </div>
+  </div>`;
+    } else {
+      rawHTML += `<div class="card mb-3" style="max-width: 450px;">
   <div class="row g-0" data-id="${item.id}">
     <div class="col-md-4">
       <img src="${item.avatar}" class="img-fluid rounded-start" alt="..." data-bs-toggle="modal"
@@ -54,25 +74,23 @@ function renderUserList(data) {
             data-bs-toggle="modal"
             data-bs-target="#userModal"
           >More</button>
-          <button type="button" class="btn btn-danger">+</button>
+          <button type="button" class="btn btn-secondary btn-remove-user" data-id="${item.id}">-</button>
       </div>
     </div>
   </div>
 </div>
 `;
+    }
   });
-
   userListContainer.innerHTML = rawHTML;
 }
 
-function addToFavorite(id) {
-  const favoriteList = JSON.parse(localStorage.getItem("Favorite")) || [];
-  const user = users.filter((user) => user.id === id);
-  if (favoriteList.some((user) => user.id === id)) {
-    return alert(`${user}已在好友清單中囉！`);
-  }
-  favoriteList.push(user);
-  localStorage.setItem("Favorite", JSON.stringify(favoriteList));
+function removeToFavorite(id) {
+  const favoriteIndex = users.findIndex((user) => user.id === id);
+  if (favoriteIndex === -1) return;
+  users.splice(favoriteIndex, 1);
+  localStorage.setItem("Favorite", JSON.stringify(users));
+  renderUserList(users);
 }
 
 function getUserByPage(page) {
@@ -82,7 +100,6 @@ function getUserByPage(page) {
 }
 
 function renderPaginator(amount) {
-  console.log(amount);
   const numberOfPages = Math.ceil(amount / USER_PER_PAGE);
   let rawHTML = "";
   for (let page = 1; page <= numberOfPages; page++) {
@@ -91,8 +108,17 @@ function renderPaginator(amount) {
   paginator.innerHTML = rawHTML;
 }
 
+dataPanel.addEventListener("click", function onPanelClick(event) {
+  event.preventDefault();
+  console.log(event.target.dataset.id);
+  if (event.target.matches(".btn-remove-user")) {
+    removeToFavorite(Number(event.target.dataset.id));
+  }
+});
+
 serchForm.addEventListener("submit", function onSearchPeople(event) {
   event.preventDefault();
+
   const keyword = searchInput.value.trim().toLowerCase();
   filterUsers = users.filter((user) =>
     user.name.toLowerCase().includes(keyword)
@@ -111,9 +137,14 @@ userListContainer.addEventListener("click", function onShowModal(event) {
 paginator.addEventListener("click", function onPaginatorClick(event) {
   event.preventDefault();
   if (event.target.tagName !== "A") return;
-
   const page = Number(event.target.dataset.page);
   renderUserList(getUserByPage(page));
 });
 
+icon.addEventListener("click", function onIconClick(event) {
+  cardModel = event.target.matches(".card-view");
+  renderUserList(getUserByPage(page));
+});
+
 renderUserList(users);
+renderPaginator(users.length);

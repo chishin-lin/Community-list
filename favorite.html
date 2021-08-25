@@ -11,13 +11,14 @@
       integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
       crossorigin="anonymous"
     />
+    <script src="https://kit.fontawesome.com/c6a4fb5947.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <!--Nav-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Fake User List</a>
+        <a class="navbar-brand" href="./index.html" style="color: rgb(250, 148, 32);">Human Resource Management System</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -42,21 +43,41 @@
       </div>
     </nav>
 
+    <div class="container mt-5">
      <!--Search-->
-     <form class="form-inline" id="search-form">
-      <input
-        type="text"
-        class="form-inline"
-        id="search-input"
-        placeholder="Name..."
-      />
-      <button type="submit" class="btn btn-primary" id="search-submit">
-        Search My Favorite
-      </button>
-    </form>
+    <div class="row pb-4 align-items-center">
+      <div class="col-4" id="gender-selector">
+        <button type="button" class="btn btn-info mr-2" data-gender="all"><i class="fas fa-venus-mars mr-1" data-gender="all"></i>All</button>
+        <button type="button" class="btn btn-primary mr-2" data-gender="male"><i class="fas fa-mars mr-1" data-gender="male"></i>male</button>
+        <button type="button" class="btn btn-danger" data-gender="female"><i class="fas fa-venus mr-1" data-gender="female"></i>Female</button>
+      </div>
+  
+      <div class="col-6 ">
+       <form class="row" id="search-form">
+        <div class="col">
+          <input
+            type="text"
+            class="form-control "
+            id="search-input"
+            placeholder="Name..."
+          />
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary col" id="search-submit">
+              Search 
+            </button>
+          </div>
+      </form>
+    </div>
+  
+      <div class="col-2 text-center" id="view-selector">
+        <i class="fas fa-2x fa-th mr-2 gallery-view card-view"></i>
+        <i class="fas fa-2x fa-th-list list-view"></i></button>
+      </div>
+  </div>
 
     <!--Users list-->
-    <div class="container mt-5">
+    
       <div class="row  justify-content-evenly user-list-container" id="data-panel"></div>
     </div>
     
@@ -65,7 +86,65 @@
       <ul class="pagination justify-content-center" id="paginator"></ul>
     </nav>
     
+<!--footer-->
+<div class="container-fluid footer-container">
+  <div class="row">
+    <div class="col-4">
+      <h4>About us!</h4>
+      <p>Colleagues can communicate with each other, promote emotional connection, welcome everyone to organize various activities, and encourage active participation in club and company activities, which extends to various gatherings.
+        Whether you want to play board games, bowling,
+        Baking together, even snorkeling together,
+        Everything you can do!</p>
+    </div>
 
+  <div class="col-4">
+    <h4>Categories</h4>
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="footer-item">
+        <a class="nav-link footer-a" aria-current="page" href="#" style="color: rgb(216, 216, 216);" >Home</a>
+      </li>
+      <li class="footer-item">
+        <a class="nav-link footer-a" href="./favorite.html" style="color: rgb(216, 216, 216);">Favorite</a>
+      </li>
+      <li class="footer-item">
+        <a class="nav-link footer-a" href="#" style="color: rgb(216, 216, 216);">link</a>
+      </li>
+      <li class="footer-item">
+        <a class="nav-link footer-a" href="#" style="color: rgb(216, 216, 216);">link</a>
+      </li>
+      <li class="footer-item">
+        <a class="nav-link footer-a" href="#" style="color: rgb(216, 216, 216);">link</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-4">
+    <form class="row" id="search-form">
+      <h4>Subscription</h4>
+     <div class="col">
+       <input
+         type="text"
+         class="form-control "
+         id="search-input"
+         placeholder="email"
+       />
+       </div>
+       <div class="col">
+         <button type="submit" class="btn btn-secondary col" id="search-submit">
+           Send
+         </button>
+       </div>
+   </form>
+ </div>
+</div>
+</div>
+
+<div class="container-fluid text-center footer-copy">
+   Copyright &copy; 2021 ChishinLin. All rights reserved.
+</div>
+
+    </footer>
+    
     <!-- Modal -->
     <div
       class="modal fade"
