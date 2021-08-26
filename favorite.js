@@ -3,15 +3,19 @@ const URL = "https://lighthouse-user-api.herokuapp.com/api/v1/users/";
 const userListContainer = document.querySelector(".user-list-container");
 const serchForm = document.querySelector("#search-form");
 const searchInput = document.querySelector("#search-input");
-const dataPanel = document.querySelector("#data-panel");
 const paginator = document.querySelector("#paginator");
+const dataPanel = document.querySelector("#data-panel");
 const icon = document.querySelector("#view-selector");
-const USER_PER_PAGE = 16;
+const modal = document.querySelector("#userModal");
+const genderBtn = document.querySelector("#gender-selector");
 
+const USER_PER_PAGE = 16;
 const users = JSON.parse(localStorage.getItem("Favorite"));
 let filterUsers = [];
+let filterGenders = [];
 let page = 1;
 let cardModel = true;
+let genderAll = "all";
 
 function showUserModal(id) {
   const modalName = document.querySelector(".card-name");
@@ -23,6 +27,7 @@ function showUserModal(id) {
   const modalImg = document.getElementById("modal-img");
   const updated = document.querySelector(".updated");
   const created = document.querySelector(".created");
+  const removeButton = document.querySelector(".modal-remove-user");
 
   axios.get(`${URL}${id}`).then((response) => {
     const item = response.data;
@@ -34,6 +39,7 @@ function showUserModal(id) {
     birthDay.innerText = `Birthday${item.birthday}`;
     updated.innerText = `updated_at:${item.updated_at}`;
     created.innerText = `${item.created_at}`;
+    removeButton.innerHTML = `<button type="button" class="btn btn-secondary btn-remove-user" data-id="${item.id}">-</button>`;
     modalImg.src = item.avatar;
   });
 }
@@ -54,7 +60,7 @@ function renderUserList(data) {
           data-bs-target="#userModal"
           data-id="${item.id}"
         >More</button>
-        <button type="button" class="btn btn-danger btn-add-user" data-id="${item.id}">+</button>
+        <button type="button" class="btn btn-secondary btn-remove-user" data-id="${item.id}">-</button>
         </div>
       </div>
   </div>`;
@@ -73,6 +79,7 @@ function renderUserList(data) {
             class="btn btn-primary card-btn"
             data-bs-toggle="modal"
             data-bs-target="#userModal"
+            data-id="${item.id}"
           >More</button>
           <button type="button" class="btn btn-secondary btn-remove-user" data-id="${item.id}">-</button>
       </div>
@@ -85,6 +92,12 @@ function renderUserList(data) {
   userListContainer.innerHTML = rawHTML;
 }
 
+function filterGender(users, condition) {
+  filterGenders = users.filter((user) => user.gender === condition);
+  renderUserList(getUserByPage(1, filterGenders));
+  renderPaginator(filterGenders.length);
+}
+
 function removeToFavorite(id) {
   const favoriteIndex = users.findIndex((user) => user.id === id);
   if (favoriteIndex === -1) return;
@@ -93,10 +106,9 @@ function removeToFavorite(id) {
   renderUserList(users);
 }
 
-function getUserByPage(page) {
+function getUserByPage(page, data) {
   const startIndex = (page - 1) * USER_PER_PAGE;
-  // const data = filterMovies.length ? filterMovies : movies;
-  return users.slice(startIndex, startIndex + USER_PER_PAGE);
+  return data.slice(startIndex, startIndex + USER_PER_PAGE);
 }
 
 function renderPaginator(amount) {
@@ -110,7 +122,16 @@ function renderPaginator(amount) {
 
 dataPanel.addEventListener("click", function onPanelClick(event) {
   event.preventDefault();
-  console.log(event.target.dataset.id);
+  if (event.target.matches(".btn-show-user")) {
+    console.log(event.target.dataset.id);
+    showUserModal(event.target.dataset.id);
+  } else if (event.target.matches(".btn-remove-user")) {
+    removeToFavorite(Number(event.target.dataset.id));
+  }
+});
+
+modal.addEventListener("click", function onModalClick(event) {
+  event.preventDefault();
   if (event.target.matches(".btn-remove-user")) {
     removeToFavorite(Number(event.target.dataset.id));
   }
@@ -118,16 +139,26 @@ dataPanel.addEventListener("click", function onPanelClick(event) {
 
 serchForm.addEventListener("submit", function onSearchPeople(event) {
   event.preventDefault();
-
   const keyword = searchInput.value.trim().toLowerCase();
-  filterUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(keyword)
-  );
 
+  if (genderAll === "male") {
+    filterUsers = filterGenders.filter((user) =>
+      user.name.toLowerCase().includes(keyword)
+    );
+  } else if (genderAll === "female") {
+    filterUsers = filterGenders.filter((user) =>
+      user.name.toLowerCase().includes(keyword)
+    );
+  } else {
+    filterUsers = users.filter((user) =>
+      user.name.toLowerCase().includes(keyword)
+    );
+  }
   if (filterUsers.length === 0) {
     return alert(`您輸入的關鍵字：${keyword} 沒有符合條件的人`);
   }
-  renderUserList(filterUsers);
+  renderUserList(getUserByPage(page, filterUsers));
+  renderPaginator(filterUsers.length);
 });
 
 userListContainer.addEventListener("click", function onShowModal(event) {
@@ -137,14 +168,40 @@ userListContainer.addEventListener("click", function onShowModal(event) {
 paginator.addEventListener("click", function onPaginatorClick(event) {
   event.preventDefault();
   if (event.target.tagName !== "A") return;
-  const page = Number(event.target.dataset.page);
-  renderUserList(getUserByPage(page));
+  page = Number(event.target.dataset.page);
+  if (genderAll === "male") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else if (genderAll === "female") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else {
+    renderUserList(getUserByPage(page, users));
+  }
 });
 
 icon.addEventListener("click", function onIconClick(event) {
   cardModel = event.target.matches(".card-view");
-  renderUserList(getUserByPage(page));
+  if (genderAll === "male") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else if (genderAll === "female") {
+    renderUserList(getUserByPage(page, filterGenders));
+  } else {
+    renderUserList(getUserByPage(page, users));
+  }
 });
 
-renderUserList(users);
+genderBtn.addEventListener("click", function onGenderClick(event) {
+  if (event.target.dataset.gender === "male") {
+    filterGender(users, "male");
+    genderAll = "male";
+  } else if (event.target.dataset.gender === "female") {
+    genderAll = "female";
+    filterGender(users, "female");
+  } else {
+    genderAll = "all";
+    renderUserList(getUserByPage(page, users));
+    renderPaginator(users.length);
+  }
+});
+
+renderUserList(getUserByPage(1, users));
 renderPaginator(users.length);

@@ -17,7 +17,6 @@ let page = 1;
 let cardModel = true;
 let genderAll = "all";
 
-//Modal
 function showUserModal(id) {
   const modalName = document.querySelector(".card-name");
   const modalTitle = document.querySelector(".modal-title");
@@ -112,7 +111,6 @@ function addToFavorite(id) {
 
 function getUserByPage(page, data) {
   const startIndex = (page - 1) * USER_PER_PAGE;
-  // const data = filterMovies.length ? filterMovies : movies;
   return data.slice(startIndex, startIndex + USER_PER_PAGE);
 }
 
