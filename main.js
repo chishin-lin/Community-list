@@ -90,7 +90,6 @@ function renderUserList(data) {
 </div>
 `;
     }
-    console.log(data);
   });
   userListContainer.innerHTML = rawHTML;
 }
@@ -145,10 +144,20 @@ modal.addEventListener("click", function onModalClick(event) {
 serchForm.addEventListener("submit", function onSearchPeople(event) {
   event.preventDefault();
   const keyword = searchInput.value.trim().toLowerCase();
-  filterUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(keyword)
-  );
 
+  if (genderAll === "male") {
+    filterUsers = filterGenders.filter((user) =>
+      user.name.toLowerCase().includes(keyword)
+    );
+  } else if (genderAll === "female") {
+    filterUsers = filterGenders.filter((user) =>
+      user.name.toLowerCase().includes(keyword)
+    );
+  } else {
+    filterUsers = users.filter((user) =>
+      user.name.toLowerCase().includes(keyword)
+    );
+  }
   if (filterUsers.length === 0) {
     return alert(`您輸入的關鍵字：${keyword} 沒有符合條件的人`);
   }
