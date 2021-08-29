@@ -41,6 +41,6 @@ div.card:hover {
 .about-p {
   margin-right: 50px;
 }
-.footer:hover {
+.footer-item a :hover {
   color: rgb(250, 148, 32);
 }

@@ -15,7 +15,12 @@ let filterUsers = [];
 let filterGenders = [];
 let page = 1;
 let cardModel = true;
-let genderAll = "all";
+const SELECED_GENDER = {
+  All: "all",
+  MALE: "male",
+  FEMALE: "female",
+};
+let genderAll = SELECED_GENDER.All;
 
 function showUserModal(id) {
   const modalName = document.querySelector(".card-name");
@@ -93,8 +98,8 @@ function renderUserList(data) {
   userListContainer.innerHTML = rawHTML;
 }
 
-function filterGender(users, condition) {
-  filterGenders = users.filter((user) => user.gender === condition);
+function filterGender(users, gender) {
+  filterGenders = users.filter((user) => user.gender === gender);
   renderUserList(getUserByPage(1, filterGenders));
   renderPaginator(filterGenders.length);
 }
@@ -142,19 +147,25 @@ modal.addEventListener("click", function onModalClick(event) {
 serchForm.addEventListener("submit", function onSearchPeople(event) {
   event.preventDefault();
   const keyword = searchInput.value.trim().toLowerCase();
-
-  if (genderAll === "male") {
-    filterUsers = filterGenders.filter((user) =>
-      user.name.toLowerCase().includes(keyword)
-    );
-  } else if (genderAll === "female") {
-    filterUsers = filterGenders.filter((user) =>
-      user.name.toLowerCase().includes(keyword)
-    );
-  } else {
-    filterUsers = users.filter((user) =>
-      user.name.toLowerCase().includes(keyword)
-    );
+  switch (genderAll) {
+    case SELECED_GENDER.MALE: {
+      filterUsers = filterGenders.filter((user) =>
+        user.name.toLowerCase().includes(keyword)
+      );
+      break;
+    }
+    case SELECED_GENDER.FEMALE: {
+      filterUsers = filterGenders.filter((user) =>
+        user.name.toLowerCase().includes(keyword)
+      );
+      break;
+    }
+    default: {
+      filterUsers = users.filter((user) =>
+        user.name.toLowerCase().includes(keyword)
+      );
+      break;
+    }
   }
   if (filterUsers.length === 0) {
     return alert(`您輸入的關鍵字：${keyword} 沒有符合條件的人`);
@@ -171,23 +182,39 @@ paginator.addEventListener("click", function onPaginatorClick(event) {
   event.preventDefault();
   if (event.target.tagName !== "A") return;
   page = Number(event.target.dataset.page);
-  if (genderAll === "male") {
-    renderUserList(getUserByPage(page, filterGenders));
-  } else if (genderAll === "female") {
-    renderUserList(getUserByPage(page, filterGenders));
-  } else {
-    renderUserList(getUserByPage(page, users));
+
+  switch (genderAll) {
+    case SELECED_GENDER.MALE: {
+      renderUserList(getUserByPage(page, filterGenders));
+      break;
+    }
+    case SELECED_GENDER.FEMALE: {
+      renderUserList(getUserByPage(page, filterGenders));
+      break;
+    }
+    default: {
+      renderUserList(getUserByPage(page, users));
+      break;
+    }
   }
 });
 
 icon.addEventListener("click", function onIconClick(event) {
   cardModel = event.target.matches(".card-view");
-  if (genderAll === "male") {
-    renderUserList(getUserByPage(page, filterGenders));
-  } else if (genderAll === "female") {
-    renderUserList(getUserByPage(page, filterGenders));
-  } else {
-    renderUserList(getUserByPage(page, users));
+
+  switch (genderAll) {
+    case SELECED_GENDER.MALE: {
+      renderUserList(getUserByPage(page, filterGenders));
+      break;
+    }
+    case SELECED_GENDER.FEMALE: {
+      renderUserList(getUserByPage(page, filterGenders));
+      break;
+    }
+    default: {
+      renderUserList(getUserByPage(page, users));
+      break;
+    }
   }
 });
 
